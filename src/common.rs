@@ -20,20 +20,20 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 use std::collections::HashMap;
-use std::num::Int;
+use num::integer::Integer;
 
 use transform::Transform;
 
 pub fn insert_attribs(mut o: String, attribs: &HashMap<String, String>) -> String {
     for (at, value) in attribs.iter() {
-        o.push_str(format!(" {:?}=\"{:?}\"", *at, *value).as_slice())
+        o.push_str(&format!(" {}=\"{}\"", *at, *value))
     }
     o
 }
 
 pub fn insert_transform(mut o: String, transform: &Option<Transform>) -> String {
     match *transform {
-        Some(ref t) => o.push_str(format!(" {:?}", t.get()).as_slice()),
+        Some(ref t) => o.push_str(&format!(" {}", t.get())),
         None    => {/* nothing to do */}
     }
     o
@@ -41,14 +41,14 @@ pub fn insert_transform(mut o: String, transform: &Option<Transform>) -> String 
 
 pub fn finalize(mut o: String) -> String{ o.push_str(" />\n"); o }
 
-fn or_max<T: Int + Ord>(int: T, max: T) -> T {
+fn or_max<T: Integer + Ord>(int: T, max: T) -> T {
     if int < max { int } else { max }
 }
 
 pub fn rgb(red: u8,
            green: u8,
            blue: u8) -> String {
-    format!("rgb({:?}, {:?}, {:?})", or_max(red, 255),
+    format!("rgb({}, {}, {})", or_max(red, 255),
                                or_max(green, 255),
                                or_max(blue, 255))
 }
@@ -57,7 +57,7 @@ pub fn rgba(red: u8,
             green: u8,
             blue: u8,
             alpha: f32) -> String {
-    format!("rgba({:?}, {:?}, {:?}, {:?})",
+    format!("rgba({}, {}, {}, {})",
             or_max(red, 255),
             or_max(green, 255),
             or_max(blue, 255),

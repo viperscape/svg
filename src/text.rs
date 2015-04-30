@@ -37,10 +37,10 @@ pub struct Text {
 impl SVGEntity for Text {
     fn gen_output(&self) -> String {
         let mut o = String::new();
-        o.push_str(format!("<text x=\"{:?}\" y=\"{:?}\"",
-                           self.x, self.y).as_slice());
+        o.push_str(&format!("<text x=\"{}\" y=\"{}\"",
+                           self.x, self.y));
         o = insert_attribs(insert_transform(o, &self.transform), &self.attribs);
-        o.push_str(format!(" >{:?}</text>", self.text).as_slice());
+        o.push_str(&format!(" >{}</text>", self.text));
         o
     }
 }
