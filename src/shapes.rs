@@ -19,7 +19,7 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-use std::fmt::Debug;
+use std::fmt::{Debug,Display};
 use std::vec::Vec;
 use std::collections::HashMap;
 use num::integer::Integer;
@@ -105,10 +105,10 @@ impl<T: Integer + Debug> Polygon<T> {
     }
 }
 
-fn get_points<T: Integer + Debug>(points: &Vec<(T, T)>) -> String {
-    let mut p: String = String::from_str("points=\"");
+fn get_points<T: Integer + Display>(points: &Vec<(T, T)>) -> String {
+    let mut p: String = "points=\"".to_string();
     for &(ref x, ref y) in points.iter() {
-        p.push_str(&format!("{:?},{:?} ", x, y))
+        p.push_str(&format!("{},{} ", x, y))
     }
     p.push_str("\"");
     p
@@ -124,7 +124,7 @@ impl SVGEntity for Circle {
     }
 }
 
-impl<T: Integer + Debug> SVGEntity for PolyLine<T> {
+impl<T: Integer + Display> SVGEntity for PolyLine<T> {
     fn gen_output(&self) -> String {
         let mut o = String::new();
         o.push_str(&format!("<polyline {}", get_points(&self.points)));
@@ -133,7 +133,7 @@ impl<T: Integer + Debug> SVGEntity for PolyLine<T> {
     }
 }
 
-impl<T: Integer + Debug> SVGEntity for Polygon<T> {
+impl<T: Integer + Display> SVGEntity for Polygon<T> {
     fn gen_output(&self) -> String {
         let mut o = String::new();
         o.push_str(&format!("<polygon {}", get_points(&self.points)));

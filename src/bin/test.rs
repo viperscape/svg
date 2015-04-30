@@ -19,10 +19,6 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#![feature(io)]
-#![feature(collections)]
-#![feature(path)]
-
 extern crate svg;
 
 use std::io::{BufWriter};
@@ -67,7 +63,7 @@ pub fn main() {
     image.desc("A simple main test for the rust svg generation library");
 
     match image.finalize(&mut output) {
-        Ok(_)         => {},
-        Err(err)     => panic!("{}", err)
+        Ok(_)    => {},
+        Err(err) => panic!("{}", err)
     }
 }

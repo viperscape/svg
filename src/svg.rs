@@ -22,14 +22,12 @@
 #![crate_name = "svg"]
 #![crate_type = "dylib"]
 #![crate_type = "rlib"]
-// #![warn(missing_doc)]
 #![allow(dead_code)]
-#![feature(collections)]
 
 extern crate num;
 
 use std::io::{Write,Result};
-use std::fmt::Debug;
+use std::fmt::Display;
 // use std::vec::Vec;
 use std::collections::HashMap;
 use num::integer::Integer;
@@ -205,7 +203,7 @@ impl SVG {
         }.gen_output())
     }
 
-    pub fn polyline<T: Integer + Debug + Clone>(&mut self,
+    pub fn polyline<T: Integer + Display + Clone>(&mut self,
                                            points: &Vec<(T, T)>,
                                            attribs: &str) {
         self.content.push_str(&PolyLine {
@@ -215,7 +213,7 @@ impl SVG {
         }.gen_output())
     }
 
-    pub fn polygon<T: Integer + Debug + Clone>(&mut self,
+    pub fn polygon<T: Integer + Display + Clone>(&mut self,
                                           points: &Vec<(T, T)>,
                                           attribs: &str) {
         self.content.push_str(&Polygon {
