@@ -88,8 +88,26 @@ fn load_svg (path: &str) -> Vec<Element> {
 }
 
 fn build_svg (e: &Element) {
-    let mut image = SVG::new(12, 12);
-    if let Some(vb) = e.attributes.get(&("viewBox".to_string(), None)) {
-        //image.view_box(vb.0, vb.1,vb.2,vb.3);
+    let mut image = SVG::new(100,100);
+
+    // build view box for svg
+    if let Some(vb) = parse_viewbox(e) {
+        image.view_box(vb.0,vb.1,vb.2,vb.3);
     }
+    
+}
+
+fn parse_viewbox (e: &Element) -> Option<(i32,i32,i32,i32)> {
+    if let Some(_vb) = e.attributes.get(&("viewBox".to_string(), None)) {
+        let mut vb = vec!();
+        for i in _vb.split(' ') {
+            match i.parse::<i32>() {
+                Ok(v) => vb.push(v),
+                Err(e) => panic!("malformed svg xml: {:?}",e),
+            }
+        }
+        if vb.len() > 3 { return Some((vb[0], vb[1],vb[2],vb[3])) }
+    }
+
+    None
 }
