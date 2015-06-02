@@ -25,23 +25,23 @@ pub struct Transform {
 }
 
 pub fn translate(x: i32, y: i32) -> String {
-    format!("translate({:?}, {:?})", x, y)
+    format!("translate({}, {})", x, y)
 }
 
 pub fn rotate(angle: i32) -> String {
-    format!("rotate({:?})", angle)
+    format!("rotate({})", angle)
 }
 
 pub fn skew_x(factor: i32) -> String {
-    format!("skewX({:?})", factor)
+    format!("skewX({})", factor)
 }
 
 pub fn skew_y(factor: i32) -> String {
-    format!("skewY({:?})", factor)
+    format!("skewY({})", factor)
 }
 
 pub fn scale(x_scale: i32, y_scale: i32) -> String {
-    format!("scale({:?}, {:?})", x_scale, y_scale)
+    format!("scale({}, {})", x_scale, y_scale)
 }
 
 impl Transform {

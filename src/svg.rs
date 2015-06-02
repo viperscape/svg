@@ -22,17 +22,15 @@
 #![crate_name = "svg"]
 #![crate_type = "dylib"]
 #![crate_type = "rlib"]
-// #![warn(missing_doc)]
 #![allow(dead_code)]
-#![feature(core)]
-#![feature(io)]
-#![feature(collections)]
 
-use std::old_io::{Writer, IoResult};
-use std::fmt::Debug;
-use std::vec::Vec;
+extern crate num;
+
+use std::io::{Write,Result};
+use std::fmt::Display;
+// use std::vec::Vec;
 use std::collections::HashMap;
-use std::num::Int;
+use num::integer::Integer;
 
 pub use shapes::{Circle, Rect, RoundedRect, Ellipse, Line, PolyLine, Polygon};
 pub use common::{rgb, rgba};
@@ -77,7 +75,7 @@ impl Head {
     }
 }
 
-pub struct SVG<'a> {
+pub struct SVG {
     head: Head,
     content: String
 }
@@ -86,13 +84,13 @@ fn make_attribs(attribs: &str) -> HashMap<String, String>{
     let mut h = HashMap::new();
     for s in attribs.split(' ') {
         let t: Vec<&str> = s.split('=').collect();
-        h.insert(t[0us].to_string(), t[1us].to_string());
+        h.insert(t[0usize].to_string(), t[1usize].to_string());
     }
     h
 }
 
-impl<'a> SVG<'a> {
-    pub fn new(width: i32, height: i32) -> SVG<'a> {
+impl SVG {
+    pub fn new(width: i32, height: i32) -> SVG {
         SVG {
             head: Head::new(width, height),
             content: String::new()
@@ -120,7 +118,7 @@ impl<'a> SVG<'a> {
     }
 
     pub fn add<T: SVGEntity>(&mut self, new_entity: &T) {
-        self.content.push_str(new_entity.gen_output().as_slice());
+        self.content.push_str(&new_entity.gen_output());
     }
 
     pub fn circle(&mut self,
@@ -128,13 +126,13 @@ impl<'a> SVG<'a> {
                   y: i32,
                   radius: u32,
                   attribs: &str) {
-        self.content.push_str(Circle {
+        self.content.push_str(&Circle {
             x: x,
             y: y,
             radius: radius,
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
     pub fn rect(&mut self,
@@ -143,14 +141,14 @@ impl<'a> SVG<'a> {
                 width: i32,
                 height: i32,
                 attribs: &str) {
-        self.content.push_str(Rect {
+        self.content.push_str(&Rect {
             x: x,
             y: y,
             width: width,
             height: height,
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
     pub fn rounded_rect(&mut self,
@@ -161,7 +159,7 @@ impl<'a> SVG<'a> {
                         x_round: u32,
                         y_round: u32,
                         attribs: &str) {
-        self.content.push_str(RoundedRect {
+        self.content.push_str(&RoundedRect {
             x: x,
             y: y,
             width: width,
@@ -170,7 +168,7 @@ impl<'a> SVG<'a> {
             y_round: y_round,
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
     pub fn ellipse(&mut self,
@@ -179,14 +177,14 @@ impl<'a> SVG<'a> {
                    x_radius: u32,
                    y_radius: u32,
                    attribs: &str) {
-        self.content.push_str(Ellipse {
+        self.content.push_str(&Ellipse {
             x: x,
             y: y,
             x_radius: x_radius,
             y_radius: y_radius,
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
     pub fn line(&mut self,
@@ -195,34 +193,34 @@ impl<'a> SVG<'a> {
                 x2: i32,
                 y2: i32,
                 attribs: &str) {
-        self.content.push_str(Line {
+        self.content.push_str(&Line {
             x1: x1,
             y1: y1,
             x2: x2,
             y2: y2,
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
-    pub fn polyline<T: Int + Debug + Clone>(&mut self,
+    pub fn polyline<T: Integer + Display + Clone>(&mut self,
                                            points: &Vec<(T, T)>,
                                            attribs: &str) {
-        self.content.push_str(PolyLine {
+        self.content.push_str(&PolyLine {
             points: points.clone(),
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
-    pub fn polygon<T: Int + Debug + Clone>(&mut self,
+    pub fn polygon<T: Integer + Display + Clone>(&mut self,
                                           points: &Vec<(T, T)>,
                                           attribs: &str) {
-        self.content.push_str(Polygon {
+        self.content.push_str(&Polygon {
             points: points.clone(),
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
     pub fn text(&mut self,
@@ -230,13 +228,13 @@ impl<'a> SVG<'a> {
                 y: i32,
                 text: &str,
                 attribs: &str) {
-        self.content.push_str(Text {
+        self.content.push_str(&Text {
             x: x,
             y: y,
             text: text.to_string(),
             attribs: make_attribs(attribs),
             transform: None
-        }.gen_output().as_slice())
+        }.gen_output())
     }
 
     pub fn g_begin(&mut self,
@@ -245,17 +243,17 @@ impl<'a> SVG<'a> {
                    attribs: Option<&HashMap<String, String>>) {
         self.content.push_str("<g ");
         match id {
-            Some(i) => self.content.push_str(format!("id=\"{:?}\" ", i).as_slice()),
+            Some(i) => self.content.push_str(&format!("id=\"{}\" ", i)),
             None    => {/* nothing to do */}
         }
         match transform {
-            Some(t) => self.content.push_str(format!("{:?} ", t.get()).as_slice()),
+            Some(t) => self.content.push_str(&format!("{} ", t.get())),
             None    => {/* nothing to do */}
         }
         match attribs {
             Some(a) => {
                 for (at, value) in a.iter() {
-                    self.content.push_str(format!("{:?}=\"{:?}\" ", *at, *value).as_slice())
+                    self.content.push_str(&format!("{}=\"{}\" ", *at, *value))
                 }
             },
             None    => {/* nothing to do */}
@@ -264,7 +262,7 @@ impl<'a> SVG<'a> {
     }
 
     pub fn g_id(&mut self, id: &str) {
-        self.g_begin(Some(id.as_slice()), None, None)
+        self.g_begin(Some(&id), None, None)
     }
 
     pub fn g_transform(&mut self, transform: &Transform) {
@@ -305,7 +303,7 @@ impl<'a> SVG<'a> {
         self.content.push_str("</g>\n");
     }
 
-    pub fn finalize(&mut self, output: &'a mut Writer) -> IoResult<()>{
+    pub fn finalize<'a>(&mut self, output: &'a mut Write) -> Result<usize>{
         let mut o = String::new();
         // Head
         match self.head.standalone {
@@ -313,27 +311,27 @@ impl<'a> SVG<'a> {
             false   => o.push_str(STANDALONE_NO)
         };
         o.push_str(DOC_TYPE);
-        o.push_str(format!("<svg width=\"{:?}cm\" height=\"{:?}cm\" ",
-                           self.head.width, self.head.height).as_slice());
+        o.push_str(&format!("<svg width=\"{}cm\" height=\"{}cm\" ",
+                           self.head.width, self.head.height));
         match self.head.view_box {
             Some((x, y, width, height)) => {
-                o.push_str(format!("viewBox=\"{:?} {:?} {:?} {:?}\" ", x, y, width, height).as_slice())
+                o.push_str(&format!("viewBox=\"{} {} {} {}\" ", x, y, width, height))
             },
             None                        => {/* nothing to do */}
         }
         o.push_str(XMLNS);
         match self.head.title {
-            Some(ref t) => o.push_str(format!("<title>{:?}</title>\n", *t).as_slice()),
+            Some(ref t) => o.push_str(&format!("<title>{}</title>\n", *t)),
             None    => {/* nothing to do */}
         }
         match self.head.desc {
-            Some(ref d) => o.push_str(format!("<desc>{:?}</desc>\n", *d).as_slice()),
+            Some(ref d) => o.push_str(&format!("<desc>{}</desc>\n", *d)),
             None    => {/* nothing to do */}
         }
         // Body
-        o.push_str(self.content.clone().as_slice());
+        o.push_str(&self.content.clone());
         // Close
         o.push_str("</svg>\n");
-        output.write_str(o.as_slice())
+        output.write(&o.into_bytes())
     }
 }
