@@ -57,6 +57,7 @@ pub fn main() {
     image.rect(700, 200, 200, 200, "fill=red stroke=blue stroke-width=10");
     image.rounded_rect(800, 600, 200, 200, 60, 30, "fill=red stroke=blue stroke-width=10");
     image.polygon(&polygon_points, "fill=red stroke=blue stroke-width=10");
+    image.text(0,0,"this is a\ntest!","font-family=Verdana font-size=55 fill=blue");
     image.g_end();
     image.g_end();
     image.title("Svg library test Main!");

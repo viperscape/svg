@@ -1,14 +1,19 @@
 [package]
 name = "svg"
 version = "0.0.1"
-authors = ["letang.jeremy@gmail.com"]
+authors = ["letang.jeremy@gmail.com", "viperscape <chrisfgill@gmail.com>"]
+license = "MIT"
 
 [lib]
 name = "svg"
 crate-type = ["rlib", "dylib"]
 
 [[bin]]
-name = "test"
+name = "demo"
+path = "examples/demo.rs"
 
 [dependencies]
 num = "*"
+
+[dependencies.RustyXML]
+git = "https://github.com/Florob/RustyXML"

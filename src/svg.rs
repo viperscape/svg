@@ -19,28 +19,13 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#![crate_name = "svg"]
-#![crate_type = "dylib"]
-#![crate_type = "rlib"]
-#![allow(dead_code)]
-
-extern crate num;
-
 use std::io::{Write,Result};
 use std::fmt::Display;
-// use std::vec::Vec;
 use std::collections::HashMap;
 use num::integer::Integer;
 
-pub use shapes::{Circle, Rect, RoundedRect, Ellipse, Line, PolyLine, Polygon};
-pub use common::{rgb, rgba};
-pub use text::Text;
-pub use transform::Transform;
-
-mod shapes;
-mod text;
-mod transform;
-mod common;
+use ::{Circle, Rect, RoundedRect, Ellipse, Line, PolyLine, Polygon,
+       Text, Transform};
 
 static DOC_TYPE: &'static str = "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \
 \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n";
