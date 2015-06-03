@@ -155,6 +155,23 @@ fn parse_xy (e: &Element) -> Result<(i32,i32),&str> {
     Err("No XY")
 }
 
+fn parse_title (e: &Element) -> Result<&str,&str> {
+    if let Some(t) = e.attributes.get(&("title".to_string(), None)) {
+        return Ok(t)
+    }
+
+    Err("No title")
+}
+
+fn parse_desc (e: &Element) -> Result<&str,&str> {
+    if let Some(t) = e.attributes.get(&("desc".to_string(), None)) {
+        return Ok(t)
+    }
+
+    Err("No description")
+}
+
+
 /*enum ParseErr {
     Malformed(String),
     Missing(String),
