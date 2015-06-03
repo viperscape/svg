@@ -40,8 +40,7 @@ pub trait SVGEntity {
 
 pub struct Head {
     pub standalone: bool,
-    pub width: i32,
-    pub height: i32,
+    pub dim: (i32,i32),
     pub xy: (i32,i32),
     pub view_box: Option<(i32, i32, i32, i32)>,
     pub desc: Option<String>,
@@ -52,8 +51,7 @@ impl Head {
     pub fn new(width: i32, height: i32) -> Head {
         Head {
             standalone: false,
-            width: width,
-            height: height,
+            dim: (width,height),
             xy: (0,0),
             view_box: None,
             desc: None,
@@ -301,7 +299,7 @@ impl SVG {
         };
         o.push_str(DOC_TYPE);
         o.push_str(&format!("<svg width=\"{}cm\" height=\"{}cm\" ",
-                           self.head.width, self.head.height));
+                           self.head.dim.0, self.head.dim.1));
         match self.head.view_box {
             Some((x, y, width, height)) => {
                 o.push_str(&format!("viewBox=\"{} {} {} {}\" ", x, y, width, height))

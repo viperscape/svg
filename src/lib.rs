@@ -101,8 +101,7 @@ fn build_svg (e: &Element) {
 
     // set dimensions
     if let Some(d) = parse_dim(e).ok() {
-        image.head.width = d.0;
-        image.head.height = d.1;
+        image.head.dim = d;
     }
     
 }
@@ -130,6 +129,7 @@ fn parse_px<'e> (e: &'e Element, s: &str) -> Result<i32,&'e str> {
             _ => (),
         }
     }
+    
     Err("No px")
 }
 
@@ -140,7 +140,7 @@ fn parse_dim (e: &Element) -> Result<(i32,i32),&str> {
         }
     }
 
-    return Err("No dimensions")
+    Err("No dimensions")
 }
 
 fn parse_xy (e: &Element) -> Result<(i32,i32),&str> {
