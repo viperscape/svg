@@ -38,10 +38,11 @@ pub trait SVGEntity {
     fn gen_output(&self) -> String;
 }
 
-struct Head {
+pub struct Head {
     pub standalone: bool,
     pub width: i32,
     pub height: i32,
+    pub xy: (i32,i32),
     pub view_box: Option<(i32, i32, i32, i32)>,
     pub desc: Option<String>,
     pub title: Option<String>
@@ -53,15 +54,18 @@ impl Head {
             standalone: false,
             width: width,
             height: height,
+            xy: (0,0),
             view_box: None,
             desc: None,
             title: None
         }
     }
+
+    pub fn set_xy(&mut self, x: i32, y: i32) { self.xy=(x,y); }
 }
 
 pub struct SVG {
-    head: Head,
+    pub head: Head,
     content: String
 }
 

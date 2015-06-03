@@ -56,7 +56,6 @@ fn test_xml_svg () {
 fn test_svg () {
     let v = load_svg("assets/rust-logo-blk.svg");
     build_svg(&v[0]);
-    panic!();
 }
 
 
@@ -94,6 +93,17 @@ fn build_svg (e: &Element) {
     if let Some(vb) = parse_viewbox(e).ok() {
         image.view_box(vb.0,vb.1,vb.2,vb.3);
     }
+
+    // set xy
+    if let Some(xy) = parse_xy(e).ok() {
+        image.head.xy = xy;
+    }
+
+    // set dimensions
+    if let Some(d) = parse_dim(e).ok() {
+        image.head.width = d.0;
+        image.head.height = d.1;
+    }
     
 }
 
@@ -110,6 +120,37 @@ fn parse_viewbox (e: &Element) -> Result<(i32,i32,i32,i32),&str> {
     }
 
     Err("No viewbox")
+}
+
+fn parse_px<'e> (e: &'e Element, s: &str) -> Result<i32,&'e str> {
+    if let Some(i) = e.attributes.get(&(s.to_string(), None)) {
+        let is: Vec<&str> = i.split("px").collect();
+        match is[0].parse::<i32>() {
+            Ok(v) => return Ok(v),
+            _ => (),
+        }
+    }
+    Err("No px")
+}
+
+fn parse_dim (e: &Element) -> Result<(i32,i32),&str> {
+    if let Some(w) = parse_px(e,"width").ok() {
+        if let Some(h) = parse_px(e,"height").ok() {
+            return Ok((w,h))
+        }
+    }
+
+    return Err("No dimensions")
+}
+
+fn parse_xy (e: &Element) -> Result<(i32,i32),&str> {
+    if let Some(x) = parse_px(e,"x").ok() {
+        if let Some(y) = parse_px(e,"y").ok() {
+            return Ok((x,y))
+        }
+    }
+
+    Err("No XY")
 }
 
 /*enum ParseErr {
