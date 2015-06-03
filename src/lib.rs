@@ -55,7 +55,8 @@ fn test_xml_svg () {
 #[test]
 fn test_svg () {
     let v = load_svg("assets/rust-logo-blk.svg");
-    build_svg(&v[0]);
+    let svg = build_svg(&v[0]);
+    assert_eq!(svg.head.dim.0,144);
 }
 
 
@@ -86,7 +87,7 @@ fn load_svg (path: &str) -> Vec<Element> {
     ve
 }
 
-fn build_svg (e: &Element) {
+fn build_svg (e: &Element) -> SVG {
     let mut image = SVG::new(100,100);
 
     // build view box for svg
@@ -103,7 +104,8 @@ fn build_svg (e: &Element) {
     if let Some(d) = parse_dim(e).ok() {
         image.head.dim = d;
     }
-    
+
+    image
 }
 
 fn parse_viewbox (e: &Element) -> Result<(i32,i32,i32,i32),&str> {
